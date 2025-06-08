@@ -1,7 +1,9 @@
 import { User, UserRepository } from "../domain/user";
 
-export const createUser = (repo: UserRepository) => async (name: string): Promise<User> => {
-  return repo.create({ name });
+export const createUser = (repo: UserRepository) => async (
+  data: Omit<User, "id">,
+): Promise<User> => {
+  return repo.create(data);
 };
 
 export const getUser = (repo: UserRepository) => async (id: string): Promise<User | null> => {

@@ -5,7 +5,7 @@ export class InMemoryUserRepository implements UserRepository {
   private users = new Map<string, User>();
 
   async create(data: Omit<User, "id">): Promise<User> {
-    const user: User = { id: randomUUID(), ...data };
+    const user = { id: randomUUID(), ...data } as User;
     this.users.set(user.id, user);
     return user;
   }
@@ -17,7 +17,7 @@ export class InMemoryUserRepository implements UserRepository {
   async update(id: string, data: Partial<Omit<User, "id">>): Promise<User | null> {
     const user = this.users.get(id);
     if (!user) return null;
-    const updated = { ...user, ...data };
+    const updated = { ...user, ...data } as User;
     this.users.set(id, updated);
     return updated;
   }
