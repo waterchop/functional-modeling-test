@@ -18,12 +18,17 @@ const prisma = new PrismaClient({
 const repo = createPrismaUserRepository(prisma);
 
 app.post("/users", async (req: Request, res: Response): Promise<void> => {
-  const name = req.body.name;
+  const { name, isAdmin, roles, plan } = req.body;
   if (!name) {
     res.status(400).json({ error: "name is required" });
     return;
   }
-  const user = await createUser(repo)(name);
+
+  const data = isAdmin
+    ? { name, isAdmin: true, roles: Array.isArray(roles) ? roles : [] }
+    : { name, isAdmin: false, plan: plan ?? "free" };
+
+  const user = await createUser(repo)(data);
   res.status(201).json(user);
 });
 

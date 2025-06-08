@@ -1,7 +1,24 @@
-export interface User {
+export type Subscription = "paid" | "free"
+
+export type Role = "edit" | "view" | "full"
+
+export interface BaseUser {
   id: string
   name: string
+  isAdmin: boolean
 }
+
+export interface AdminUser extends BaseUser {
+  isAdmin: true
+  roles: Role[]
+}
+
+export interface RegularUser extends BaseUser {
+  isAdmin: false
+  plan: Subscription
+}
+
+export type User = AdminUser | RegularUser
 
 export interface UserRepository {
   create(data: Omit<User, "id">): Promise<User>

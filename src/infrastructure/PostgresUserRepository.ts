@@ -6,15 +6,20 @@ export class PostgresUserRepository implements UserRepository {
 
   async create(data: Omit<User, "id">): Promise<User> {
     const result = await this.pool.query(
-      'INSERT INTO "User" (name) VALUES ($1) RETURNING id, name',
-      [data.name]
+      'INSERT INTO "User" (name, "isAdmin", roles, plan) VALUES ($1, $2, $3, $4) RETURNING id, name, "isAdmin", roles, plan',
+      [
+        data.name,
+        data.isAdmin,
+        (data as any).roles ?? null,
+        (data as any).plan ?? null,
+      ]
     );
     return result.rows[0];
   }
 
   async findById(id: string): Promise<User | null> {
     const result = await this.pool.query(
-      'SELECT id, name FROM "User" WHERE id = $1',
+      'SELECT id, name, "isAdmin", roles, plan FROM "User" WHERE id = $1',
       [id]
     );
     return result.rows[0] || null;
@@ -22,8 +27,14 @@ export class PostgresUserRepository implements UserRepository {
 
   async update(id: string, data: Partial<Omit<User, "id">>): Promise<User | null> {
     const result = await this.pool.query(
-      'UPDATE "User" SET name = COALESCE($2, name) WHERE id = $1 RETURNING id, name',
-      [id, data.name ?? null]
+      'UPDATE "User" SET name = COALESCE($2, name), "isAdmin" = COALESCE($3, "isAdmin"), roles = COALESCE($4, roles), plan = COALESCE($5, plan) WHERE id = $1 RETURNING id, name, "isAdmin", roles, plan',
+      [
+        id,
+        data.name ?? null,
+        data.isAdmin ?? null,
+        "roles" in data ? (data as any).roles ?? null : null,
+        "plan" in data ? (data as any).plan ?? null : null,
+      ]
     );
     return result.rows[0] || null;
   }
@@ -34,7 +45,7 @@ export class PostgresUserRepository implements UserRepository {
 
   async findAll(): Promise<User[]> {
     const result = await this.pool.query(
-      'SELECT id, name FROM "User" ORDER BY name'
+      'SELECT id, name, "isAdmin", roles, plan FROM "User" ORDER BY name'
     );
     return result.rows as User[];
   }
