@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/presentation/server.js",
     "prisma": "prisma",
     "test": "echo \"No tests specified\""
   },
@@ -15,10 +15,14 @@
   "type": "commonjs",
   "dependencies": {
     "effect": "^3.16.4",
+    "express": "^4.21.2",
+    "pg": "^8.11.3",
     "prisma": "^6.9.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.3",
     "@types/node": "^22.15.30",
+    "@types/pg": "^8.15.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
