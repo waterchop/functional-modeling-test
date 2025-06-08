@@ -1,17 +1,21 @@
 import express, { Request, Response } from "express";
-import { Pool } from "pg";
-import { PostgresUserRepository } from "../infrastructure/PostgresUserRepository";
+import { PrismaClient } from "@prisma/client";
+import { createPrismaUserRepository } from "../infrastructure/PrismaUserRepository";
 import { createUser, deleteUser, getUser, listUsers, updateUser } from "../application/user";
 
 const app = express();
 app.use(express.json());
 
-const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    "postgresql://postgres:postgres@localhost:5432/app",
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url:
+        process.env.DATABASE_URL ||
+        "postgresql://postgres:postgres@localhost:5432/app",
+    },
+  },
 });
-const repo = new PostgresUserRepository(pool);
+const repo = createPrismaUserRepository(prisma);
 
 app.post("/users", async (req: Request, res: Response): Promise<void> => {
   const name = req.body.name;
