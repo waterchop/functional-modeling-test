@@ -1,0 +1,12 @@
+{
+  "name": "functional-modeling-test",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [5432],
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/nvm:2": {
+      "node": "20"
+    }
+  }
+}
